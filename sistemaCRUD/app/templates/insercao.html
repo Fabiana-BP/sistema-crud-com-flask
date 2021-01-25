@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="br" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <title>Inserção</title>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.4.1/jspdf.debug.js"
+      integrity="sha384-THVO/sM0mFD9h7dfSndI6TS0PgAGavwKvB5hAxRRvc0o9cPLohB0wb/PTA7LdUHs"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-sm bg-dark">
+      <ul class="navbar-nav">
+        <li class="navbar-item">
+          <a class="nav-link" href="/listagem">LISTAGEM</a>
+        </li>
+        <li class="navbar-item">
+          <a class="nav-link" href="/insercao">NOVO</a>
+        </li>
+        <li class="navbar-item">
+          <a class="nav-link" href="/graficos">GRÁFICOS</a>
+        </li>
+      </ul>
+    </nav>
+    <br />
+    <div class="container">
+      {% if mensagem %}
+      <span class="alert alert-danger">{{mensagem}}</span>
+      {% endif %}
+      <h2 style="margin-top: 30px">Inserção</h2>
+      <form
+        class="ml-3"
+        action="/salvar_insercao"
+        method="post"
+        name="frm_insercao"
+      >
+        <div class="form-group">
+          <label for="nome">Nome:</label>
+          <input class="form-control" type="text" name="nome" />
+        </div>
+        <div class="form-group">
+          <label for="idade">Idade:</label>
+          <input
+            class="form-control"
+            type="number"
+            name="idade"
+            min="1"
+            max="125"
+          />
+        </div>
+        <div class="form-group">
+          <select class="form-control" name="sexo">
+            <option value="M">Masculino</option>
+            <option value="F">Feminino</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="salario">Salário:</label>
+          <input class="form-control" type="text" name="salario" />
+        </div>
+
+        <a href="/listagem" class="btn btn-secondary" role="button">Cancelar</a>
+        <button type="submit" class="btn btn-success">Inserir</button>
+      </form>
+    </div>
+  </body>
+</html>

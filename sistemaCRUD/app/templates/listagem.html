@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="br" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <title>Listagem</title>
+
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.4.1/jspdf.debug.js"
+      integrity="sha384-THVO/sM0mFD9h7dfSndI6TS0PgAGavwKvB5hAxRRvc0o9cPLohB0wb/PTA7LdUHs"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-sm bg-dark">
+      <ul class="navbar-nav">
+        <li class="navbar-item">
+          <a class="nav-link" href="/listagem">LISTAGEM</a>
+        </li>
+        <li class="navbar-item">
+          <a class="nav-link" href="/insercao">NOVO</a>
+        </li>
+        <li class="navbar-item">
+          <a class="nav-link" href="/graficos">GRÁFICOS</a>
+        </li>
+      </ul>
+    </nav>
+    <br />
+    <div class="container">
+      {% if mensagem %}
+      <span class="alert alert-danger">{{mensagem}}</span>
+      {% endif %}
+      <h2 style="margin-top: 30px">Listagem</h2>
+      <form action="/consulta" method="POST" name="frm_consulta" class="ml-3">
+        <div class="form-group">
+          <div class="row">
+            <input
+              type="text"
+              name="consulta"
+              class="form-control col-md-5"
+              placeholder="Digite aqui sua consulta"
+            />
+            <select class="form-control col-md-2" name="campo">
+              <option value="nome">Nome</option>
+              <option value="idade">Idade</option>
+              <option value="sexo">Sexo</option>
+              <option value="salario">Salário</option>
+            </select>
+            <button type="submit" class="btn btn-success">Consultar</button>
+          </div>
+        </div>
+      </form>
+      <div style="overflow: scroll; height: 310px; width: 100%" align="center">
+        <table class="table">
+          <thead>
+            <tr>
+              <th><a href="/ordenacao/id/{{ordem}}">Id</a></th>
+              <th><a href="/ordenacao/nome/{{ordem}}">Nome</a></th>
+              <th><a href="/ordenacao/idade/{{ordem}}">Idade</a></th>
+              <th><a href="/ordenacao/sexo/{{ordem}}">Sexo</a></th>
+              <th><a href="/ordenacao/salario/{{ordem}}">Salário</a></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for pessoa in pessoas %} {% if pessoa.id%}
+            <tr>
+              <td nowrap="true">
+                <a href="/selecao/{{pessoa.id}}">{{pessoa.id}}</a>
+              </td>
+              <td nowrap="true">{{pessoa.nome}}</td>
+              <td nowrap="true">{{pessoa.idade}}</td>
+              <td nowrap="true">{{pessoa.sexo}}</td>
+              <td nowrap="true">{{pessoa.salario}}</td>
+              <td>
+                <a
+                  href="/edicao/{{pessoa.id}}"
+                  class="btn btn-primary"
+                  role="button"
+                  >Editar</a
+                >
+                <a
+                  href="/delecao/{{pessoa.id}}"
+                  class="btn btn-danger"
+                  role="button"
+                  >EXCLUIR</a
+                >
+              </td>
+            </tr>
+
+            <tr>
+              {%endif%} {% endfor %}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <a href="#" style="float: right" onclick="relatorio()"
+        >Imprimir Relatório</a
+      >
+      <textarea id="dados" style="display: none">
+        {% for pessoa in pessoas %}
+          {{pessoa.nome}} | {{pessoa.idade}} | {{pessoa.sexo}} | {{pessoa.salario}}#
+        {% endfor %}
+      </textarea>
+      <script>
+        function relatorio() {
+          const doc = jsPDF({ orientation: "landscape" });
+          const texto = document.getElementById("dados").innerText;
+          const arrLinhas = texto.split("#");
+          let conteudo = "Relatório de Pessoas\n\n";
+          for (let linha = 0; linha < arrLinhas.length; linha++) {
+            let arrColunas = arrLinhas[linha].split("|");
+            arrColunas[0] = arrColunas[0].trim().padEnd(35, "*"); //trim elimina espaços, padEnd registro de tamanho 35
+            if (arrColunas[0].indexOf("*") > 0) {
+              //se existe pelo menos um caracter *
+              conteudo +=
+                `NOME = ${arrColunas[0]} - ` +
+                `IDADE = ${arrColunas[1]} - ` +
+                `SEXO = ${arrColunas[2]} - ` +
+                `SALARIO = ${arrColunas[3]} \n`;
+            }
+          }
+          doc.setFontSize(12);
+          doc.setFont("Courier");
+          doc.text(conteudo, 30, 30); //30 e 30 margem seperior e esquerda
+          doc.save("relatorio.pdf");
+        }
+      </script>
+    </div>
+  </body>
+</html>
